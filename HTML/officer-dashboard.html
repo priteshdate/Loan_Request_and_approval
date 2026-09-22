@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meridian Capital | Loan Approval Officer Portal</title>
+    <link rel="stylesheet" href="../CSS/dashboard-main.css">
+    <link rel="stylesheet" href="../CSS/dashboard-additions.css">
+    <link rel="stylesheet" href="../CSS/officer-dashboard.css">
+</head>
+<body>
+
+    <!-- ================= TOP NAV ================= -->
+    <header class="topbar">
+        <div class="topbar-inner">
+            <div class="topbar-left">
+                <span class="brand-mark">Meridian Capital</span>
+                <span class="portal-label">Loan Approval Officer Portal</span>
+            </div>
+
+            <div class="topbar-right">
+                <div class="account-chip" id="accountChip">
+                    <span class="account-avatar" id="accountInitials">--</span>
+                    <span class="account-name" id="accountName">Loading…</span>
+                </div>
+
+                <!-- Account dropdown — toggled by clicking accountChip above -->
+                <div class="account-dropdown" id="accountDropdown">
+                    <div class="account-dropdown-row">
+                        <span class="account-dropdown-label">Name</span>
+                        <span class="account-dropdown-value" id="dropdownName">—</span>
+                    </div>
+                    <div class="account-dropdown-row">
+                        <span class="account-dropdown-label">Email</span>
+                        <span class="account-dropdown-value" id="dropdownEmail">—</span>
+                    </div>
+                    <div class="account-dropdown-row">
+                        <span class="account-dropdown-label">Role</span>
+                        <span class="account-dropdown-value" id="dropdownUsertype">—</span>
+                    </div>
+                    <button class="account-dropdown-logout" id="dropdownLogoutBtn">Log out</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ================= MAIN ================= -->
+    <main class="dashboard-main">
+
+        <div class="welcome-row">
+            <span class="eyebrow">Officer portal</span>
+            <h1 id="welcomeHeading">Welcome back</h1>
+            <p>Review incoming applications and confirm basic eligibility before forwarding to admin.</p>
+        </div>
+
+        <!-- ===== Application Queue: Pending Decisions ===== -->
+        <section class="table-card">
+            <div class="queue-meta-row">
+                <h2>Application Queue: Pending Decisions</h2>
+                <span class="queue-count-chip" id="queueCountChip">— pending</span>
+            </div>
+
+            <div class="table-toolbar">
+                <input type="text" id="queueSearchInput" class="table-search" placeholder="Search by applicant or application ID">
+                <span class="table-result-count" id="queueResultCount"></span>
+            </div>
+
+            <table class="ledger-table">
+                <thead>
+                    <tr>
+                        <th>Applicant</th>
+                        <th>Application ID</th>
+                        <th>Loan Type</th>
+                        <th>Amount</th>
+                        <th>Submitted</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="queueTableBody">
+                    <tr class="table-state-row">
+                        <td colspan="6">Loading applications…</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="table-pagination" id="queuePagination" style="display: none;">
+                <span class="pagination-info" id="paginationInfo"></span>
+                <div class="pagination-buttons" id="paginationButtons"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= VIEW MODAL: applicant detail + eligibility check ================= -->
+    <div class="modal-overlay" id="viewModalOverlay">
+        <div class="modal-panel">
+            <div class="modal-head">
+                <div>
+                    <h3 id="modalApplicantName">Applicant</h3>
+                    <p id="modalApplicationMeta">Application —</p>
+                </div>
+                <button class="modal-close" id="modalCloseBtn" aria-label="Close">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <label>Loan Type</label>
+                        <span id="modalLoanType">—</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Amount Requested</label>
+                        <span id="modalAmount">—</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Tenure</label>
+                        <span id="modalTenure">—</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Monthly Income</label>
+                        <span id="modalIncome">—</span>
+                    </div>
+                    <div class="detail-item full">
+                        <label>Purpose</label>
+                        <span id="modalPurpose">—</span>
+                    </div>
+                </div>
+
+                <!-- Documents the applicant uploaded once on their Documents tab.
+                     Officer reviews them here, then forwards to Admin. -->
+                <div class="doc-list">
+                    <p class="doc-list-title">Uploaded Documents</p>
+                    <div id="modalDocList"></div>
+                </div>
+
+                <div class="forward-note">
+                    Review the uploaded documents, then forward this application to Admin for the approval decision. This step does not approve or reject the loan.
+                </div>
+            </div>
+
+            <div class="modal-foot">
+                <button class="btn btn-outline" id="modalCancelBtn">Cancel</button>
+                <button class="btn btn-primary" id="modalForwardBtn">Forward to Admin</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../JS/officer.js"></script>
+</body>
+</html>

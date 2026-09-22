@@ -1,0 +1,240 @@
+/* ============================================================================
+   ADMIN DASHBOARD — role-specific layout only.
+   Shared tokens, topbar, cards, buttons, pills, table-card, and modal
+   styles come from dashboard-base.css. The plain-table + pagination
+   pattern is shared visually with the Officer dashboard, redeclared
+   here (lightly) so this file has no dependency on officer-dashboard.css.
+   ============================================================================ */
+
+.queue-meta-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.queue-meta-row h2 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 19px;
+    font-weight: 600;
+    margin: 0;
+    color: var(--ink);
+}
+
+.queue-count-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bronze-soft);
+    color: var(--bronze-dark);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 100px;
+}
+
+.table-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.table-search {
+    width: 280px;
+    padding: 10px 14px;
+    border: 1px solid #D8D4C8;
+    border-radius: 5px;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.table-search::placeholder { color: #B6B0A0; }
+
+.table-search:focus {
+    outline: none;
+    border-color: var(--bronze);
+    box-shadow: 0 0 0 3px rgba(184, 146, 74, 0.15);
+}
+
+.table-result-count {
+    font-size: 12.5px;
+    color: var(--muted);
+}
+
+.ledger-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 13.5px;
+}
+
+.ledger-table thead th {
+    background: var(--paper);
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    border-bottom: 1px solid var(--paper-line);
+    padding: 12px 14px;
+    text-align: left;
+}
+
+.ledger-table tbody td {
+    padding: 14px;
+    border-bottom: 1px solid var(--paper-line);
+    color: var(--ink);
+    vertical-align: middle;
+}
+
+.ledger-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.ledger-table tbody tr:hover {
+    background-color: rgba(184, 146, 74, 0.05);
+}
+
+.applicant-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.applicant-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--bronze-soft);
+    color: var(--bronze-dark);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-weight: 600;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.applicant-name { font-weight: 600; }
+.applicant-sub { display: block; font-size: 11.5px; color: var(--muted); margin-top: 1px; }
+
+.table-state-row td {
+    text-align: center;
+    padding: 56px 16px !important;
+    color: var(--muted);
+}
+
+.table-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 16px;
+}
+
+.table-pagination .pagination-info {
+    font-size: 12.5px;
+    color: var(--muted);
+}
+
+.pagination-buttons {
+    display: flex;
+    gap: 2px;
+}
+
+.pagination-buttons button {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    color: var(--ink);
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.pagination-buttons button:hover:not(:disabled):not(.is-current) {
+    background: var(--bronze-soft);
+    color: var(--bronze-dark);
+}
+
+.pagination-buttons button.is-current {
+    background: var(--ledger-teal);
+    color: #F7F5F0;
+    cursor: default;
+}
+
+.pagination-buttons button:disabled {
+    color: #C7C2B4;
+    cursor: not-allowed;
+}
+
+/* ---------- Officer's forwarded recommendation, shown read-only in the modal ---------- */
+.officer-note {
+    margin-top: 4px;
+    padding: 12px 14px;
+    background: var(--bronze-soft);
+    border: 1px solid rgba(184, 146, 74, 0.3);
+    border-radius: 6px;
+    font-size: 12.5px;
+    color: var(--bronze-dark);
+    line-height: 1.55;
+}
+
+/* ---------- Decision row inside the modal footer ---------- */
+.decision-reason-wrap {
+    margin-top: 16px;
+}
+
+.decision-reason-wrap label {
+    display: block;
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+    margin-bottom: 6px;
+}
+
+.decision-reason-wrap textarea {
+    width: 100%;
+    min-height: 72px;
+    padding: 10px 12px;
+    border: 1px solid #D8D4C8;
+    border-radius: 5px;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 13.5px;
+    font-family: 'Inter', sans-serif;
+    resize: vertical;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.decision-reason-wrap textarea:focus {
+    outline: none;
+    border-color: var(--bronze);
+    box-shadow: 0 0 0 3px rgba(184, 146, 74, 0.15);
+}
+
+.decision-reason-wrap.hidden {
+    display: none;
+}
+
+@media (max-width: 700px) {
+    .table-toolbar { flex-direction: column; align-items: stretch; }
+    .table-search { width: 100%; }
+    .ledger-table { font-size: 12.5px; }
+    .ledger-table thead th:nth-child(3),
+    .ledger-table tbody td:nth-child(3) { display: none; }
+}

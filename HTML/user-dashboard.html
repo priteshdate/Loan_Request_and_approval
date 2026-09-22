@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meridian Capital | Dashboard</title>
+    <link rel="stylesheet" href="../CSS/dashboard-main.css">
+    <link rel="stylesheet" href="../CSS/dashboard-additions.css">
+    <link rel="stylesheet" href="../CSS/user-dashboard.css">
+</head>
+<body>
+
+    <!-- ================= TOP NAV ================= -->
+    <header class="topbar">
+        <div class="topbar-inner">
+            <div class="topbar-left">
+                <span class="brand-mark">Meridian Capital</span>
+            </div>
+
+            <nav class="topbar-nav">
+                <a href="#" class="nav-link active" data-tab="home">
+                    Home
+                    <span class="nav-tooltip">Your application status and account overview</span>
+                </a>
+                <a href="#" class="nav-link" data-tab="apply">
+                    Apply for Loan
+                    <span class="nav-tooltip">Start a new loan application</span>
+                </a>
+                <a href="#" class="nav-link" data-tab="documents">
+                    Documents
+                    <span class="nav-tooltip">Upload and manage your application documents</span>
+                </a>
+                <a href="#" class="nav-link" data-tab="track">
+                    Track Status
+                    <span class="nav-tooltip">Follow your application through each approval step</span>
+                </a>
+            </nav>
+
+            <div class="topbar-right">
+                <span class="notif-bell" id="notifBell" title="Notifications">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M13.7 21a2 2 0 01-3.4 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                    </svg>
+                    <span class="notif-dot" id="notifDot"></span>
+                </span>
+
+                <div class="account-chip" id="accountChip">
+                    <span class="account-avatar" id="accountInitials">--</span>
+                    <span class="account-name" id="accountName">Loading…</span>
+                </div>
+
+                <!-- Account dropdown — toggled by clicking accountChip above -->
+                <div class="account-dropdown" id="accountDropdown">
+                    <div class="account-dropdown-row">
+                        <span class="account-dropdown-label">Name</span>
+                        <span class="account-dropdown-value" id="dropdownName">—</span>
+                    </div>
+                    <div class="account-dropdown-row">
+                        <span class="account-dropdown-label">Email</span>
+                        <span class="account-dropdown-value" id="dropdownEmail">—</span>
+                    </div>
+                    <div class="account-dropdown-row">
+                        <span class="account-dropdown-label">Role</span>
+                        <span class="account-dropdown-value" id="dropdownUsertype">—</span>
+                    </div>
+                    <button class="account-dropdown-logout" id="dropdownLogoutBtn">Log out</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ================= MAIN ================= -->
+    <main class="dashboard-main">
+
+        <!-- ===== HOME TAB ===== -->
+        <section class="tab-panel is-active" id="tab-home">
+            <div class="welcome-row">
+                <span class="eyebrow">Your portal</span>
+                <h1 id="welcomeHeading">Welcome back</h1>
+                <p>Here's where your loan application stands today.</p>
+            </div>
+
+            <div class="user-grid">
+
+                <!-- ===== LEFT (75%): Current Application + Status + Progress ===== -->
+                <section class="card" id="currentApplicationCard">
+                    <div class="card-header">
+                        <h2>Current Application</h2>
+                        <span class="card-sub" id="applicationSubmittedOn">—</span>
+                    </div>
+
+                    <div class="application-summary-row">
+                        <div>
+                            <p class="application-id" id="applicationId">No active application</p>
+                            <p class="application-meta" id="applicationMeta">Apply for a loan to see its status here.</p>
+                        </div>
+                        <span class="status-pill is-progress" id="applicationStatusPill">In Progress</span>
+                    </div>
+
+                    <div class="app-detail-grid" id="applicationDetailGrid">
+                        <div class="app-detail-item">
+                            <label>Loan Type</label>
+                            <span id="detailLoanType">—</span>
+                        </div>
+                        <div class="app-detail-item">
+                            <label>Amount Requested</label>
+                            <span id="detailAmount">—</span>
+                        </div>
+                        <div class="app-detail-item">
+                            <label>Tenure</label>
+                            <span id="detailTenure">—</span>
+                        </div>
+                    </div>
+
+                    <div class="progress-tracker">
+                        <div class="progress-tracker-label">Application Progress</div>
+                        <div class="progress-track" id="progressTrack">
+                            <div class="progress-step" data-step="submitted">
+                                <span class="step-line"></span>
+                                <div class="step-dot">
+                                    <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </div>
+                                <div class="step-title">Application Submitted</div>
+                                <div class="step-sub" id="stepSubmittedDate">—</div>
+                            </div>
+                            <div class="progress-step" data-step="hr">
+                                <span class="step-line"></span>
+                                <div class="step-dot">2</div>
+                                <div class="step-title">HR Verification</div>
+                                <div class="step-sub" id="stepHrDate">Pending</div>
+                            </div>
+                            <div class="progress-step" data-step="admin">
+                                <span class="step-line"></span>
+                                <div class="step-dot">3</div>
+                                <div class="step-title">Admin Approval</div>
+                                <div class="step-sub" id="stepAdminDate">Pending</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ===== RIGHT (25%): Overview ===== -->
+                <aside class="overview-col">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Applications</div>
+                        <div class="stat-value" id="statTotalApplications">—</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Active</div>
+                        <div class="stat-value accent" id="statActive">—</div>
+                        <div class="stat-foot">Currently in review</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Pending Actions</div>
+                        <div class="stat-value" id="statPendingActions">—</div>
+                        <div class="stat-foot" id="statPendingActionsFoot">Nothing needs your attention</div>
+                    </div>
+                </aside>
+
+            </div>
+        </section>
+
+        <!-- ===== APPLY FOR LOAN TAB ===== -->
+        <section class="tab-panel" id="tab-apply">
+            <div class="welcome-row">
+                <span class="eyebrow">New application</span>
+                <h1>Apply for a Loan</h1>
+                <p>Tell us how much you need and what it's for — your officer will review it from here.</p>
+            </div>
+
+            <div class="card form-card">
+                <form id="applyLoanForm">
+                    <div class="form-row">
+                        <label for="loanType">Loan Type</label>
+                        <select id="loanType" required>
+                            <option value="" disabled selected>Select a loan type</option>
+                            <option value="Personal Loan">Personal Loan</option>
+                            <option value="Home Loan">Home Loan</option>
+                            <option value="Business Loan">Business Loan</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="loanAmount">Loan Amount</label>
+                        <input type="number" id="loanAmount" min="1" step="1" placeholder="e.g. 250000" required>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="loanTenure">Tenure (months)</label>
+                        <input type="number" id="loanTenure" min="1" step="1" placeholder="e.g. 36" required>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="loanPurpose">Purpose</label>
+                        <textarea id="loanPurpose" rows="4" placeholder="What is this loan for?" required></textarea>
+                    </div>
+
+                    <div id="applyFormError" class="error-message" style="display: none;"></div>
+
+                    <button type="submit" id="applySubmitBtn">Submit Application</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ===== DOCUMENTS TAB ===== -->
+        <section class="tab-panel" id="tab-documents">
+            <div class="welcome-row">
+                <span class="eyebrow">Your files</span>
+                <h1>Documents</h1>
+                <p>Upload and manage the documents tied to your application.</p>
+            </div>
+
+            <div class="card placeholder-card">
+                <p>Document upload is coming soon. Once available, you'll be able to add and review files your officer needs to verify your application here.</p>
+            </div>
+
+            <!-- Real upload UI — documents are uploaded once here and reused
+                 by every loan application, not re-submitted per application. -->
+            <div class="card form-card">
+                <h2 style="margin-top:0;">Upload a Document</h2>
+                <form id="documentUploadForm">
+                    <div class="form-row">
+                        <label for="docTypeSelect">Document Type</label>
+                        <select id="docTypeSelect" required>
+                            <option value="" disabled selected>Select a document type</option>
+                            <option value="Identity Proof">Identity Proof</option>
+                            <option value="Address Proof">Address Proof</option>
+                            <option value="Income Proof">Income Proof</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="docFileInput">File</label>
+                        <input type="file" id="docFileInput" required>
+                    </div>
+
+                    <div id="documentUploadError" class="error-message" style="display: none;"></div>
+
+                    <button type="submit" id="documentUploadBtn">Upload Document</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2 style="margin-top:0;">Your Documents</h2>
+                <div id="missingDocsNotice" class="missing-docs-notice" style="display:none;"></div>
+                <div id="documentList"></div>
+            </div>
+        </section>
+
+        <!-- ===== TRACK STATUS TAB (placeholder) ===== -->
+        <section class="tab-panel" id="tab-track">
+            <div class="welcome-row">
+                <span class="eyebrow">Progress</span>
+                <h1>Track Status</h1>
+                <p>A detailed, step-by-step view of your application's journey.</p>
+            </div>
+
+            <div class="card placeholder-card">
+                <p>A detailed tracking view is coming soon. In the meantime, check the Home tab for your application's current status and progress.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= APPLY CONFIRMATION DIALOG ================= -->
+    <div class="modal-overlay" id="applyConfirmOverlay">
+        <div class="modal-panel">
+            <div class="modal-head">
+                <div>
+                    <h3>Confirm your application</h3>
+                    <p>Please review before submitting.</p>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <label>Loan Type</label>
+                        <span id="applyConfirmLoanType">—</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Amount Requested</label>
+                        <span id="applyConfirmAmount">—</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Tenure</label>
+                        <span id="applyConfirmTenure">—</span>
+                    </div>
+                </div>
+                <p>Do you want to submit this application? Your uploaded documents will be sent along with it for review.</p>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-outline" id="applyConfirmNoBtn">Cancel</button>
+                <button class="btn btn-primary" id="applyConfirmYesBtn">Yes, Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= TOAST ================= -->
+    <div class="toast" id="appToast">
+        <span class="toast-icon" aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="toast-message" id="appToastMessage">Done.</span>
+    </div>
+
+    <script src="../JS/user.js"></script>
+</body>
+</html>

@@ -1,0 +1,892 @@
+/* ============================================================================
+   MERIDIAN CAPITAL — DASHBOARD DESIGN SYSTEM (shared across all roles)
+   Continues the "ledger" language from the login page: deep ink teal,
+   warm paper, bronze accent, Source Serif 4 + Inter pairing.
+
+   Loaded by: user-dashboard.html, officer-dashboard.html, admin-dashboard.html
+   Each role then loads its own small stylesheet for layout that is
+   unique to that role (the User 75/25 split, the Officer queue table,
+   the Admin approve/reject modal, etc).
+   ============================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --ink: #0A2C2D;
+    --ledger-teal: #0F3D3E;
+    --ledger-teal-dark: #082627;
+    --paper: #F7F5F0;
+    --paper-line: #E8E5DC;
+    --bronze: #B8924A;
+    --bronze-dark: #9C7A38;
+    --bronze-soft: rgba(184, 146, 74, 0.12);
+    --muted: #6B7A78;
+    --success: #2D7D5A;
+    --success-bg: #EAF4EE;
+    --warning: #B8862A;
+    --warning-bg: #FBF3E4;
+    --error: #B3432F;
+    --error-bg: #FBEFEC;
+    --card-shadow: 0 1px 2px rgba(10, 44, 45, 0.04), 0 10px 28px rgba(10, 44, 45, 0.07);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--paper);
+    color: var(--ink);
+}
+
+a { color: var(--bronze-dark); text-decoration: none; }
+a:hover { color: var(--bronze); }
+
+/* ============================================================================
+   TOP NAV — shared shell. Left: brand (+ optional portal label).
+   Center: role-specific nav links (User only). Right: notifications + account.
+   ============================================================================ */
+.topbar {
+    background-color: var(--ledger-teal);
+    padding: 0 8vw;
+    position: relative;
+}
+
+.topbar::after {
+    content: "";
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%; height: 2px;
+    background: var(--bronze);
+}
+
+.topbar-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    gap: 24px;
+}
+
+.topbar-left {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.brand-mark {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 19px;
+    font-weight: 600;
+    color: #F7F5F0;
+    letter-spacing: -0.2px;
+    white-space: nowrap;
+}
+
+.portal-label {
+    font-size: 11px;
+    color: #9FB5B1;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.topbar-nav {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    flex: 1;
+    justify-content: center;
+}
+
+.topbar-nav a,
+.topbar-nav .nav-link {
+    position: relative;
+    color: #C9D6D2;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 2px;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.topbar-nav a:hover,
+.topbar-nav a.active,
+.topbar-nav .nav-link:hover,
+.topbar-nav .nav-link.active {
+    color: #F7F5F0;
+    border-bottom-color: var(--bronze);
+}
+
+/* Custom hover tooltip — short one-line description under each nav item.
+   Lives inside the <a> as a <span class="nav-tooltip">, positioned via CSS
+   rather than relying on the native title attribute (which is slow to
+   appear and unstyled). */
+.nav-tooltip {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: var(--ink);
+    color: #F7F5F0;
+    font-size: 11.5px;
+    font-weight: 500;
+    line-height: 1.4;
+    white-space: nowrap;
+    padding: 7px 12px;
+    border-radius: 5px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 20;
+    box-shadow: 0 8px 20px rgba(10, 44, 45, 0.25);
+}
+
+.nav-tooltip::before {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-bottom-color: var(--ink);
+}
+
+.nav-link:hover .nav-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-shrink: 0;
+}
+
+.notif-bell {
+    position: relative;
+    width: 22px;
+    height: 22px;
+    color: #C9D6D2;
+    cursor: pointer;
+    transition: color 0.15s ease;
+}
+
+.notif-bell:hover { color: #F7F5F0; }
+.notif-bell svg { width: 100%; height: 100%; }
+
+.notif-dot {
+    position: absolute;
+    top: -2px; right: -2px;
+    width: 8px; height: 8px;
+    background: var(--bronze);
+    border: 1.5px solid var(--ledger-teal);
+    border-radius: 50%;
+}
+
+.account-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.account-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--bronze-soft);
+    border: 1px solid rgba(184, 146, 74, 0.4);
+    color: var(--bronze);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-weight: 600;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.account-name {
+    color: #F7F5F0;
+    font-size: 13.5px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* ============================================================================
+   PAGE SHELL
+   ============================================================================ */
+.dashboard-main {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 40px 8vw 64px;
+}
+
+.welcome-row {
+    margin-bottom: 32px;
+    animation: riseIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.welcome-row .eyebrow {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    color: var(--bronze-dark);
+    margin-bottom: 8px;
+}
+
+.welcome-row h1 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 30px;
+    font-weight: 600;
+    margin: 0;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+}
+
+.welcome-row p {
+    margin: 6px 0 0 0;
+    color: var(--muted);
+    font-size: 14.5px;
+}
+
+@keyframes riseIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================================
+   CARDS — generic content card used across all dashboards
+   ============================================================================ */
+.card {
+    background: #FFFFFF;
+    border: 1px solid var(--paper-line);
+    border-radius: 8px;
+    padding: 28px 26px;
+    box-shadow: var(--card-shadow);
+}
+
+.card-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.card-header h2 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 19px;
+    font-weight: 600;
+    margin: 0;
+    color: var(--ink);
+}
+
+.card-header .card-sub {
+    font-size: 12.5px;
+    color: var(--muted);
+}
+
+/* ============================================================================
+   STATUS PILLS — shared vocabulary across all three roles
+   ============================================================================ */
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+}
+
+.status-pill::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.status-pill.is-pending { background: var(--warning-bg); color: var(--warning); }
+.status-pill.is-progress { background: var(--bronze-soft); color: var(--bronze-dark); }
+.status-pill.is-approved { background: var(--success-bg); color: var(--success); }
+.status-pill.is-rejected { background: var(--error-bg); color: var(--error); }
+.status-pill.is-verified { background: var(--success-bg); color: var(--success); }
+.status-pill.is-unverified { background: var(--error-bg); color: var(--error); }
+
+/* ============================================================================
+   BUTTONS — shared
+   ============================================================================ */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.16s ease, box-shadow 0.16s ease, transform 0.05s ease, color 0.16s ease, border-color 0.16s ease;
+}
+
+.btn:active { transform: translateY(1px); }
+
+.btn-primary {
+    background: var(--ledger-teal);
+    color: #F7F5F0;
+}
+.btn-primary:hover { background: var(--ledger-teal-dark); box-shadow: 0 4px 14px rgba(15, 61, 62, 0.25); }
+
+.btn-outline {
+    background: transparent;
+    color: var(--ledger-teal);
+    border: 1px solid var(--paper-line);
+}
+.btn-outline:hover { border-color: var(--bronze); color: var(--bronze-dark); }
+
+.btn-approve {
+    background: var(--success);
+    color: #FFFFFF;
+}
+.btn-approve:hover { background: #246B4B; }
+
+.btn-reject {
+    background: #FFFFFF;
+    color: var(--error);
+    border: 1px solid #E3B6AA;
+}
+.btn-reject:hover { background: var(--error-bg); }
+
+.btn-sm {
+    padding: 6px 14px;
+    font-size: 12.5px;
+}
+
+.btn:disabled {
+    background: #D8D4C8;
+    color: #8C8676;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* ============================================================================
+   DATATABLES THEME OVERRIDES — restyles the library's default chrome to
+   match the ledger system. Loaded after jquery.dataTables.min.css.
+   ============================================================================ */
+.table-card {
+    background: #FFFFFF;
+    border: 1px solid var(--paper-line);
+    border-radius: 8px;
+    padding: 24px 26px 8px;
+    box-shadow: var(--card-shadow);
+}
+
+table.dataTable {
+    width: 100% !important;
+    border-collapse: separate !important;
+    border-spacing: 0;
+    font-size: 13.5px;
+    margin-top: 8px !important;
+}
+
+table.dataTable thead th {
+    background: var(--paper);
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    border-bottom: 1px solid var(--paper-line) !important;
+    padding: 12px 14px !important;
+    text-align: left;
+}
+
+table.dataTable tbody td {
+    padding: 14px !important;
+    border-bottom: 1px solid var(--paper-line);
+    color: var(--ink);
+    vertical-align: middle;
+}
+
+table.dataTable tbody tr:hover {
+    background-color: rgba(184, 146, 74, 0.05);
+}
+
+table.dataTable.no-footer {
+    border-bottom: none !important;
+}
+
+/* DataTables' own search box + length menu + pagination, restyled.
+   Per spec: only search + pagination are exposed; column sort/length
+   menu are disabled via JS config, these rules cover what remains. */
+.dataTables_wrapper .dataTables_filter {
+    margin-bottom: 16px;
+}
+
+.dataTables_wrapper .dataTables_filter label {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    font-size: 0;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    padding: 10px 14px;
+    border: 1px solid #D8D4C8;
+    border-radius: 5px;
+    background: var(--paper);
+    color: var(--ink);
+    width: 260px;
+    margin-left: 0 !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.dataTables_wrapper .dataTables_filter input::placeholder { color: #B6B0A0; }
+
+.dataTables_wrapper .dataTables_filter input:focus {
+    outline: none;
+    border-color: var(--bronze);
+    box-shadow: 0 0 0 3px rgba(184, 146, 74, 0.15);
+}
+
+.dataTables_wrapper .dataTables_info {
+    color: var(--muted);
+    font-size: 12.5px;
+    padding-top: 16px !important;
+}
+
+.dataTables_wrapper .dataTables_paginate {
+    padding-top: 12px !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    padding: 6px 12px !important;
+    margin: 0 2px;
+    border-radius: 4px !important;
+    border: 1px solid transparent !important;
+    color: var(--ink) !important;
+    background: transparent !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: var(--bronze-soft) !important;
+    border-color: transparent !important;
+    color: var(--bronze-dark) !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: var(--ledger-teal) !important;
+    color: #F7F5F0 !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+    color: #C7C2B4 !important;
+    cursor: not-allowed;
+}
+
+.dataTables_wrapper .dataTables_processing {
+    color: var(--muted);
+    background: var(--paper) !important;
+    border: 1px solid var(--paper-line) !important;
+    box-shadow: none !important;
+}
+
+table.dataTable td.dt-empty-state,
+.dataTables_empty {
+    text-align: center !important;
+    padding: 56px 16px !important;
+    color: var(--muted);
+}
+
+.empty-state-icon {
+    width: 36px;
+    height: 36px;
+    margin: 0 auto 12px;
+    color: #C7C2B4;
+}
+
+.view-btn {
+    background: transparent;
+    border: 1px solid var(--paper-line);
+    color: var(--ledger-teal);
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.view-btn:hover {
+    border-color: var(--bronze);
+    color: var(--bronze-dark);
+    background: var(--bronze-soft);
+}
+
+/* ============================================================================
+   MODAL — shared overlay used for "View" detail / approve-reject
+   ============================================================================ */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 44, 45, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.modal-overlay.is-open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-panel {
+    background: #FFFFFF;
+    border-radius: 8px;
+    max-width: 560px;
+    width: 100%;
+    max-height: 86vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 64px rgba(10, 44, 45, 0.25);
+    transform: translateY(14px) scale(0.98);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-overlay.is-open .modal-panel {
+    transform: translateY(0) scale(1);
+}
+
+.modal-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 22px 26px;
+    border-bottom: 1px solid var(--paper-line);
+}
+
+.modal-head h3 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 19px;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    color: var(--ink);
+}
+
+.modal-head p {
+    margin: 0;
+    font-size: 12.5px;
+    color: var(--muted);
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 22px;
+    line-height: 1;
+    padding: 0;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+}
+
+.modal-close:hover { color: var(--ink); }
+
+.modal-body {
+    padding: 22px 26px;
+}
+
+.modal-foot {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 18px 26px;
+    border-top: 1px solid var(--paper-line);
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 24px;
+}
+
+.detail-item label {
+    display: block;
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+    margin-bottom: 4px;
+}
+
+.detail-item span {
+    font-size: 14px;
+    color: var(--ink);
+}
+
+.detail-item.full {
+    grid-column: 1 / -1;
+}
+
+.doc-list {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid var(--paper-line);
+}
+
+.doc-list-title {
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+    margin: 0 0 12px 0;
+}
+
+.doc-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--paper-line);
+    font-size: 13.5px;
+}
+
+.doc-row:last-child { border-bottom: none; }
+
+/* ============================================================================
+   TOAST — lightweight success/info notification, replaces native alert().
+   Markup: <div class="toast" id="appToast"><span class="toast-icon">…
+   </span><span class="toast-message" id="...">…</span></div>
+   JS toggles the "is-visible" class and swaps the icon/message text.
+   ============================================================================ */
+.toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(16px);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--ledger-teal);
+    color: #F7F5F0;
+    padding: 14px 22px;
+    border-radius: 8px;
+    box-shadow: 0 16px 40px rgba(10, 44, 45, 0.35);
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    z-index: 200;
+    max-width: min(420px, 86vw);
+}
+
+.toast.is-visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.toast.is-error {
+    background: #FFFFFF;
+    color: var(--error);
+    border: 1px solid #E3B6AA;
+}
+
+.toast-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--bronze);
+    color: var(--ledger-teal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toast.is-error .toast-icon {
+    background: var(--error);
+    color: #FFFFFF;
+}
+
+.toast-icon svg {
+    width: 11px;
+    height: 11px;
+}
+
+.toast-message {
+    line-height: 1.4;
+}
+
+/* Generic inline form error — same treatment as login.css's .error-message,
+   reusable by any dashboard form (Apply for Loan, future forms, etc). */
+.error-message {
+    color: var(--error);
+    background: var(--error-bg);
+    border: 1px solid #F0DAD3;
+    padding: 12px;
+    border-radius: 5px;
+    font-size: 13px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.account-chip {
+    position: relative;
+}
+ 
+.account-dropdown {
+    position: absolute;
+    top: calc(100% + 14px);
+    right: 0;
+    width: 240px;
+    background: #FFFFFF;
+    border: 1px solid var(--paper-line);
+    border-radius: 8px;
+    box-shadow: 0 16px 40px rgba(10, 44, 45, 0.18);
+    padding: 16px 18px;
+    z-index: 50;
+    opacity: 0;
+    transform: translateY(6px);
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+ 
+.account-dropdown.is-open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+ 
+.account-dropdown-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--paper-line);
+}
+ 
+.account-dropdown-row:last-of-type {
+    border-bottom: none;
+}
+ 
+.account-dropdown-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: var(--muted);
+}
+ 
+.account-dropdown-value {
+    font-size: 13.5px;
+    color: var(--ink);
+    font-weight: 500;
+    word-break: break-word;
+}
+ 
+.account-dropdown-logout {
+    width: 100%;
+    margin-top: 12px;
+    background: transparent;
+    border: 1px solid #E3B6AA;
+    color: var(--error);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 0;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+ 
+.account-dropdown-logout:hover {
+    background: var(--error-bg);
+}
+ 
+/* ---------- Documents tab: upload list + missing-docs notice ----------
+   Reuses .doc-row / .doc-list-title from dashboard-main.css's modal
+   styling so the Documents tab list looks identical to the
+   officer/admin "Uploaded Documents" block inside their modals. */
+.missing-docs-notice {
+    background: var(--warning-bg);
+    color: var(--warning);
+    border: 1px solid #EBD7AE;
+    padding: 12px 14px;
+    border-radius: 5px;
+    font-size: 13px;
+    margin-bottom: 16px;
+}
+ 
+.doc-empty-note {
+    color: var(--muted);
+    font-size: 13.5px;
+    margin: 4px 0;
+}
+ 
+#documentList .doc-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+ 
+#documentList .doc-row a {
+    font-size: 12.5px;
+    font-weight: 600;
+}
+ 
+/* ---------- Apply-confirm dialog ----------
+   Reuses .modal-overlay / .modal-panel / .detail-grid / .btn-* from
+   dashboard-main.css — no new modal chrome needed, just a bit of
+   breathing room for the confirmation copy. */
+#applyConfirmOverlay .modal-body p {
+    margin-top: 18px;
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.5;
+}
+ 
+
+/* ============================================================================
+   RESPONSIVE
+   ============================================================================ */
+@media (max-width: 860px) {
+    .topbar-nav { display: none; }
+    .topbar-inner { height: auto; padding: 14px 0; flex-wrap: wrap; gap: 12px; }
+    .account-name { display: none; }
+    .dashboard-main { padding: 28px 5vw 48px; }
+    .detail-grid { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .welcome-row, .card { animation: none !important; }
+    .modal-overlay, .modal-panel, .btn, .view-btn, .toast, .nav-tooltip { transition: none; }
+}

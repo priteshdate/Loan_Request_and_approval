@@ -1,0 +1,223 @@
+/* ============================================================================
+   LOAN APPROVAL OFFICER DASHBOARD — role-specific layout only.
+   Shared tokens, topbar, cards, buttons, pills, table-card, and modal
+   styles come from dashboard-base.css. This file holds only what's
+   unique to the officer's queue view.
+   ============================================================================ */
+
+.queue-meta-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.queue-meta-row h2 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 19px;
+    font-weight: 600;
+    margin: 0;
+    color: var(--ink);
+}
+
+.queue-count-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bronze-soft);
+    color: var(--bronze-dark);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 100px;
+}
+
+/* Custom lightweight table toolbar — search input + result count.
+   Mirrors the DataTables-style chrome in dashboard-base.css visually,
+   but is plain markup driven entirely by officer-dashboard.js. */
+.table-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.table-search {
+    width: 280px;
+    padding: 10px 14px;
+    border: 1px solid #D8D4C8;
+    border-radius: 5px;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.table-search::placeholder { color: #B6B0A0; }
+
+.table-search:focus {
+    outline: none;
+    border-color: var(--bronze);
+    box-shadow: 0 0 0 3px rgba(184, 146, 74, 0.15);
+}
+
+.table-result-count {
+    font-size: 12.5px;
+    color: var(--muted);
+}
+
+/* Plain table, styled to match the dashboard-base "table.dataTable" look
+   without requiring the DataTables library. */
+.ledger-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 13.5px;
+}
+
+.ledger-table thead th {
+    background: var(--paper);
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    border-bottom: 1px solid var(--paper-line);
+    padding: 12px 14px;
+    text-align: left;
+}
+
+.ledger-table tbody td {
+    padding: 14px;
+    border-bottom: 1px solid var(--paper-line);
+    color: var(--ink);
+    vertical-align: middle;
+}
+
+.ledger-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.ledger-table tbody tr:hover {
+    background-color: rgba(184, 146, 74, 0.05);
+}
+
+.applicant-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.applicant-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--bronze-soft);
+    color: var(--bronze-dark);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-weight: 600;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.applicant-name { font-weight: 600; }
+.applicant-sub { display: block; font-size: 11.5px; color: var(--muted); margin-top: 1px; }
+
+/* Empty / loading rows inside the table body */
+.table-state-row td {
+    text-align: center;
+    padding: 56px 16px !important;
+    color: var(--muted);
+}
+
+/* Pagination — same visual language as the DataTables override,
+   built from plain buttons so it works without the library. */
+.table-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 16px;
+}
+
+.table-pagination .pagination-info {
+    font-size: 12.5px;
+    color: var(--muted);
+}
+
+.pagination-buttons {
+    display: flex;
+    gap: 2px;
+}
+
+.pagination-buttons button {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    color: var(--ink);
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.pagination-buttons button:hover:not(:disabled):not(.is-current) {
+    background: var(--bronze-soft);
+    color: var(--bronze-dark);
+}
+
+.pagination-buttons button.is-current {
+    background: var(--ledger-teal);
+    color: #F7F5F0;
+    cursor: default;
+}
+
+.pagination-buttons button:disabled {
+    color: #C7C2B4;
+    cursor: not-allowed;
+}
+
+/* ---------- Eligibility check block inside the View modal ---------- */
+.eligibility-check-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--paper-line);
+}
+
+.eligibility-check-row:last-child { border-bottom: none; }
+
+.eligibility-check-label {
+    font-size: 13.5px;
+    color: var(--ink);
+}
+
+.forward-note {
+    margin-top: 16px;
+    padding: 12px 14px;
+    background: var(--paper);
+    border: 1px solid var(--paper-line);
+    border-radius: 6px;
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.55;
+}
+
+@media (max-width: 700px) {
+    .table-toolbar { flex-direction: column; align-items: stretch; }
+    .table-search { width: 100%; }
+    .ledger-table { font-size: 12.5px; }
+    .ledger-table thead th:nth-child(3),
+    .ledger-table tbody td:nth-child(3) { display: none; } /* hide a secondary column on very small screens */
+}

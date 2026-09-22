@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pritedge Capital | Loan Management Portal</title>
+    <link rel="stylesheet" href="../CSS/login.css">
+    <script src="../JS/login.js" defer ></script>
+</head>
+<body>
+
+    <header>
+        <div class="site-header-inner">
+            <span class="brand-mark">Pritedge Capital</span>
+            <span class="brand-tagline">Loan Management Portal</span>
+        </div>
+    </header>
+
+    <section class="hero-section">
+        <div class="login-card">
+            <div class="login-box">
+                <h2>Sign In</h2>
+                <div id="subtitle" class="subtitle">Please enter your credentials</div>
+                <div id="errorBox" class="error-message" style="display: none;">Access Denied</div>
+ 
+                <!-- ================= STEP 1: CREDENTIALS ROW ELEMENTS ================= -->
+                <div id="screen-credentials">
+                    <label for="username">UserID</label>
+                    <input type="text" id="username" placeholder="Enter User ID" autocomplete="username">
+ 
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="••••••••">
+                    
+                    <button id="authBtn" class="auth-button" type="button"> Authenticate</button>
+
+                    <div style="margin-top: 15px; text-align: center; font-size: 14px;">
+                        <a id="forgotPasswordLink" style="color: #9C7A38; text-decoration: none; cursor: pointer; font-weight: 500;" onclick="showForgotPasswordScreen()">Forgot password?</a>
+                    </div>
+
+                    <div style="margin-top: 10px; text-align: center; font-size: 14px;">
+                        <span class="signup-prompt">New here? <a id="signUpLink" style="color: #9C7A38; text-decoration: none; cursor: pointer; font-weight: 500;" onclick="showSignUpScreen()">Create an account</a></span>
+                    </div>
+                </div>
+ 
+                <!-- ================= STEP 2: IN-PLACE OTP REPLACEMENT VIEW ================= -->
+                <div id="screen-otp" class="hidden">
+                    <div id="otp-attempts-left" class="attempts-left"></div>
+                    <label for="otpCode">Enter OTP</label>
+                    <input type="text" id="otpCode" placeholder="000000" maxlength="6" pattern="\d{6}" inputmode="numeric"
+                        onkeydown="digitsOnly(event)"
+                        oninput="this.value = this.value.replace(/\D/g, '')" 
+                        style="text-align: center; font-size: 22px; letter-spacing: 6px; font-weight: bold;">
+ 
+                    <!-- NEW: error display node for the OTP step, referenced by validateOTP() / resendOTPCode() -->
+                    <div id="errorBox2" class="error-message" style="display: none;"></div>
+ 
+                    <button id="verifyBtn" onclick="validateOTP()" style="margin-top: 20px;">Verify</button>
+ 
+                    <!-- In-Place Resend Logic Area -->
+                    <div style="margin-top: 15px; text-align: center; font-size: 14px;">
+                       <div style="margin-top: 15px; text-align: center; font-size: 14px;">
+                            <span id="resend-text">Didn't receive the code? <a id="resendBtn" style="color: #9C7A38; text-decoration: none; cursor: pointer; font-weight: 500;" onclick="resendOTPCode()">Resend OTP</a></span>
+                        </div> 
+                    </div>
+                </div>
+
+                <!-- ================= FORGOT PASSWORD STEP 1: USERNAME ================= -->
+                <div id="screen-forgot" class="hidden">
+                    <label for="forgotUsername">Username</label>
+                    <input type="text" id="forgotUsername" placeholder="Enter username">
+
+                    <div id="errorBox3" class="error-message" style="display: none;"></div>
+
+                    <button onclick="submitForgotPassword()" style="margin-top: 20px;">Send OTP</button>
+
+                    <div style="margin-top: 15px; text-align: center; font-size: 14px;">
+                        <a style="color: #9C7A38; text-decoration: none; cursor: pointer; font-weight: 500;" onclick="backToLoginScreen()">Back to Sign In</a>
+                    </div>
+                </div>
+                
+                <div id="screen-reset-otp" class="hidden">
+                    <div id="reset-otp-attempts-left" class="attempts-left"></div>
+                    <label for="resetOtpCode">Enter OTP</label>
+                    <input type="text" id="resetOtpCode" placeholder="000000" maxlength="6" pattern="\d{6}" inputmode="numeric"
+                            onkeydown="digitsOnly(event)"
+                            oninput="this.value = this.value.replace(/\D/g, '')"
+                           style="text-align: center; font-size: 22px; letter-spacing: 6px; font-weight: bold;">
+
+                    <div id="errorBox4" class="error-message" style="display: none;"></div>
+
+                    <button id="resetVerifyBtn" onclick="verifyResetOTP()" style="margin-top: 20px;">Verify</button>
+
+                    <div style="margin-top: 15px; text-align: center; font-size: 14px;">
+                        <span id="resend-text">Didn't receive the code? <a id="resendBtn2" style="color: #9C7A38; text-decoration: none; cursor: pointer; font-weight: 500;" onclick="resendOTPCode()">Resend OTP</a></span>
+                    </div>
+                </div>
+
+                <!-- ================= FORGOT PASSWORD STEP 3: NEW PASSWORD ================= -->
+                <div id="screen-reset-password" class="hidden">
+                    <label for="resetEmployeeIdDisplay">Employee ID</label>
+                    <input type="text" id="resetEmployeeIdDisplay" readonly>
+
+                    <label for="newPassword">New Password</label>
+                    <input type="password" id="newPassword" placeholder="••••••••" oninput="checkPasswordRules()">
+
+                    <!-- Live red -> green password rule checklist -->
+                    <ul style="list-style: none; padding: 0; margin: -10px 0 20px 0; font-size: 13px;">
+                        <li id="rule-length" style="color: #ef4444; margin-bottom: 4px;">At least 8 characters</li>
+                        <li id="rule-letter" style="color: #ef4444; margin-bottom: 4px;">At least one letter</li>
+                        <li id="rule-number" style="color: #ef4444; margin-bottom: 4px;">At least one number</li>
+                        <li id="rule-special" style="color: #ef4444;">At least one special character</li>
+                    </ul>
+
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" placeholder="••••••••" oninput="checkPasswordsMatch()">
+
+                    <!-- Live red -> green match indicator -->
+                    <div id="passwordMatchMsg" style="font-size: 13px; margin: -10px 0 20px 0;"></div>
+
+                    <div id="errorBox5" class="error-message" style="display: none;"></div>
+
+                    <button onclick="submitNewPassword()" style="margin-top: 0px;">Reset Password</button>
+                </div>
+
+                <!-- ================= SIGN UP (UI ONLY — not yet wired to backend/DB) ================= -->
+                <div id="screen-signup" class="hidden">
+                    <label for="signupFullName">Full Name</label>
+                    <input type="text" id="signupFullName" placeholder="Enter full name">
+
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" placeholder="name@company.com">
+
+                    <label for="signupUsername">Username</label>
+                    <input type="text" id="signupUsername" placeholder="Choose a username">
+
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" placeholder="••••••••">
+
+                    <label for="signupConfirmPassword">Confirm Password</label>
+                    <input type="password" id="signupConfirmPassword" placeholder="••••••••">
+
+                    <div id="errorBoxSignup" class="error-message" style="display: none;"></div>
+
+                    <button onclick="submitSignUp()" style="margin-top: 20px;">Create Account</button>
+
+                    <div style="margin-top: 15px; text-align: center; font-size: 14px;">
+                        <a style="color: #9C7A38; text-decoration: none; cursor: pointer; font-weight: 500;" onclick="backToLoginFromSignUp()">Back to Sign In</a>
+                    </div>
+                </div>
+ 
+            </div>
+        </div>
+        <a href="#what-is-a-loan" class="scroll-cue" aria-label="Scroll to learn more">
+            <span></span>
+        </a>
+    </section>
+
+    <!-- ============================================================
+         WHAT IS A LOAN
+         ============================================================ -->
+    <section class="info-section" id="what-is-a-loan">
+        <div class="section-inner reveal">
+            <span class="eyebrow">The basics</span>
+            <h2>What is a loan?</h2>
+            <p class="section-lede">A loan is money a lender provides upfront, which you repay over time in fixed installments, plus interest. It's a tool — used well, it lets you act on a need today and settle the cost gradually, on agreed terms.</p>
+
+            <div class="loan-types">
+                <div class="loan-type-card reveal">
+                    <div class="loan-icon" aria-hidden="true">
+                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="8" y="6" width="32" height="36" rx="2" stroke="currentColor" stroke-width="2"/>
+                            <path d="M16 16h16M16 23h16M16 30h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <h3>Personal Loan</h3>
+                    <p>Unsecured funds for any personal need — medical costs, travel, or consolidating other debt — repaid over a fixed term.</p>
+                </div>
+
+                <div class="loan-type-card reveal">
+                    <div class="loan-icon" aria-hidden="true">
+                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 22 24 8l18 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M11 19v19h26V19" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                            <rect x="20" y="28" width="8" height="10" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3>Home Loan</h3>
+                    <p>Long-tenure financing secured against the property itself, built to keep monthly payments proportionate to income.</p>
+                </div>
+
+                <div class="loan-type-card reveal">
+                    <div class="loan-icon" aria-hidden="true">
+                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="5" y="14" width="38" height="24" rx="2" stroke="currentColor" stroke-width="2"/>
+                            <path d="M5 21h38" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 29h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <h3>Business Loan</h3>
+                    <p>Working capital or expansion funding sized to your business's cash flow, with repayment schedules that flex around it.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         WHY JOIN US
+         ============================================================ -->
+    <section class="info-section alt" id="why-join-us">
+        <div class="section-inner">
+            <span class="eyebrow reveal">Why Meridian</span>
+            <h2 class="reveal">Why join us</h2>
+
+            <div class="why-grid">
+                <div class="why-card reveal">
+                    <div class="why-icon" aria-hidden="true">
+                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="24" cy="24" r="17" stroke="currentColor" stroke-width="2"/>
+                            <path d="M16 24l5.5 5.5L33 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>Clear terms, stated upfront</h3>
+                    <p>Every rate, fee, and repayment date is laid out before you sign — nothing buried in fine print, nothing added later.</p>
+                </div>
+
+                <div class="why-card reveal">
+                    <div class="why-icon" aria-hidden="true">
+                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="24" cy="16" r="7" stroke="currentColor" stroke-width="2"/>
+                            <path d="M10 40c0-7.7 6.3-14 14-14s14 6.3 14 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <h3>A dedicated case officer</h3>
+                    <p>One named person tracks your application start to finish, so you're never explaining your situation from scratch twice.</p>
+                </div>
+
+                <div class="why-card reveal">
+                    <div class="why-icon" aria-hidden="true">
+                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M24 6v36M12 14h17a5 5 0 010 10H15a5 5 0 000 10h19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>Repayments that flex</h3>
+                    <p>Step up, step down, or pause a cycle within agreed limits — built for income that doesn't arrive the same way every month.</p>
+                </div>
+
+                <div class="why-card reveal">
+                    <div class="why-icon" aria-hidden="true">
+                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="9" y="6" width="30" height="36" rx="2" stroke="currentColor" stroke-width="2"/>
+                            <path d="M16 16h16M16 24h16M16 32h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <circle cx="33" cy="33" r="6.5" fill="var(--paper)" stroke="currentColor" stroke-width="2"/>
+                            <path d="M30.5 33l1.8 1.8 3.2-3.6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>Decisions you can audit</h3>
+                    <p>Every approval shows the criteria it was checked against, so the outcome is explainable, not just delivered.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         ELIGIBILITY
+         ============================================================ -->
+    <section class="info-section" id="eligibility">
+        <div class="section-inner">
+            <div class="eligibility-layout">
+                <div class="eligibility-copy reveal">
+                    <span class="eyebrow">Before you apply</span>
+                    <h2>Eligibility</h2>
+                    <p class="section-lede">A quick check against these conditions before any paperwork begins.</p>
+
+                    <ul class="eligibility-list">
+                        <li>
+                            <span class="check-mark" aria-hidden="true">
+                                <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </span>
+                            <div>
+                                <strong>Age 21–58</strong>
+                                <p>At the time of application, and within the lending limit at the end of the loan term.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="check-mark" aria-hidden="true">
+                                <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </span>
+                            <div>
+                                <strong>Steady, verifiable income</strong>
+                                <p>Salaried or self-employed, with at least 12 months of continuous income history.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="check-mark" aria-hidden="true">
+                                <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </span>
+                            <div>
+                                <strong>Valid identity &amp; address proof</strong>
+                                <p>Government-issued ID and a recent address document in your name.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="check-mark" aria-hidden="true">
+                                <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </span>
+                            <div>
+                                <strong>No active default on record</strong>
+                                <p>A clean standing with no unresolved default on a prior loan or credit line.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="eligibility-visual reveal" aria-hidden="true">
+                    <svg viewBox="0 0 320 360" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="40" y="20" width="240" height="320" rx="6" fill="var(--paper)" stroke="var(--ledger-teal)" stroke-width="2"/>
+                        <rect x="40" y="20" width="240" height="56" rx="6" fill="var(--ledger-teal)"/>
+                        <circle cx="64" cy="48" r="10" fill="var(--bronze)"/>
+                        <rect x="84" y="40" width="120" height="7" rx="3" fill="rgba(247,245,240,0.85)"/>
+                        <rect x="84" y="53" width="80" height="6" rx="3" fill="rgba(247,245,240,0.5)"/>
+
+                        <g class="elig-row" style="--d:0">
+                            <rect x="62" y="100" width="20" height="20" rx="4" fill="none" stroke="var(--bronze)" stroke-width="2"/>
+                            <path d="M67 110l4 4 8-9" stroke="var(--bronze)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                            <rect x="96" y="104" width="150" height="7" rx="3" fill="var(--ink)" opacity="0.55"/>
+                            <rect x="96" y="115" width="100" height="6" rx="3" fill="var(--muted)" opacity="0.4"/>
+                        </g>
+                        <g class="elig-row" style="--d:1">
+                            <rect x="62" y="150" width="20" height="20" rx="4" fill="none" stroke="var(--bronze)" stroke-width="2"/>
+                            <path d="M67 160l4 4 8-9" stroke="var(--bronze)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                            <rect x="96" y="154" width="150" height="7" rx="3" fill="var(--ink)" opacity="0.55"/>
+                            <rect x="96" y="165" width="100" height="6" rx="3" fill="var(--muted)" opacity="0.4"/>
+                        </g>
+                        <g class="elig-row" style="--d:2">
+                            <rect x="62" y="200" width="20" height="20" rx="4" fill="none" stroke="var(--bronze)" stroke-width="2"/>
+                            <path d="M67 210l4 4 8-9" stroke="var(--bronze)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                            <rect x="96" y="204" width="150" height="7" rx="3" fill="var(--ink)" opacity="0.55"/>
+                            <rect x="96" y="215" width="100" height="6" rx="3" fill="var(--muted)" opacity="0.4"/>
+                        </g>
+                        <g class="elig-row" style="--d:3">
+                            <rect x="62" y="250" width="20" height="20" rx="4" fill="none" stroke="var(--bronze)" stroke-width="2"/>
+                            <path d="M67 260l4 4 8-9" stroke="var(--bronze)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                            <rect x="96" y="254" width="150" height="7" rx="3" fill="var(--ink)" opacity="0.55"/>
+                            <rect x="96" y="265" width="100" height="6" rx="3" fill="var(--muted)" opacity="0.4"/>
+                        </g>
+
+                        <circle cx="225" cy="305" r="26" fill="var(--bronze)"/>
+                        <path d="M214 305l8 8 14-17" stroke="var(--paper)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         FOOTER
+         ============================================================ -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <strong>Meridian Capital</strong>
+                <span>Loan Management Portal</span>
+            </div>
+            <a href="#what-is-a-loan" class="back-to-top">Back to top ↑</a>
+        </div>
+    </footer>
+
+    <script>
+        (function () {
+            if (!('IntersectionObserver' in window)) {
+                document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in-view'); });
+                return;
+            }
+            var observer = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('in-view');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+            document.querySelectorAll('.reveal').forEach(function (el) {
+                observer.observe(el);
+            });
+        })();
+    </script>
+</body>
+</html>
